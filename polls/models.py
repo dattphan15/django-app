@@ -12,12 +12,18 @@ from django.utils.encoding import python_2_unicode_compatible
 # Create your models here.
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
+    
     def __str__(self):
         return self.question_text
     pub_date = models.DateTimeField('date published')
+    
     def was_published_recently(self):
         now = timezone.now()
         return now - datetime.timedelta(days=1) <= self.pub_date <= now
+    was_published_recently.admin_order_field = 'pub_date'
+    was_published_recently.boolean = True
+    was_published_recently.short_description = 'Published recently?'
+    
     def test_was_published_recently_with_old_question(self):
         """
         was_published_recently() returns False for questions whose pub_date
